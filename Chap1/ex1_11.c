@@ -16,11 +16,14 @@
 #include <stdlib.h>
 #include <inttypes.h>
 
+#define PRINT_UNSIGNED(i) printf(#i " = %" PRIuMAX "\n", (uintmax_t) (i))
+
 int main(void) {
    size_t i = 1;
 	uint32_t j = UINT32_MAX;
-
-	printf("i = %" PRIu64, i); // i = 1
-	printf("\nj = %" PRIuMAX, j); // j = 4294967295
+	//printf("i = %" PRIu64, i); // i = 1
+	//printf("\nj = %" PRIu32, j); // j = 4294967295
+	PRINT_UNSIGNED(i);
+	PRINT_UNSIGNED(j);
    return EXIT_SUCCESS;
 }

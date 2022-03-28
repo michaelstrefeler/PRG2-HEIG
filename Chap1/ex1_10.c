@@ -21,9 +21,9 @@ int main(void) {
 
 	printf("%#o\n", n); // 0377
 	printf("%X\n", n); //FF
-	printf("%+07d\n", n); // +###255
-	printf("%.3e\n", x); // 1.235e+001 (pas possible) 1.235e+01
-	printf("%g\n", x); // 12.345
+	printf("%+###d\n", n); // +###255
+	printf("%.3e\n", x); // 1.235e+01
+	printf("%g\n", x); // ou printf("%#g\n", x); 12.345
 	printf("%.4f\n", x); // 12.345
    return EXIT_SUCCESS;
 }
