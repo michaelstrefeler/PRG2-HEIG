@@ -1,6 +1,6 @@
 /*
  -----------------------------------------------------------------------------------
- Nom du fichier : <nom du fichier>.<x> (x = h ou c)
+ Nom du fichier : ex2_12.c
  Auteur(s)      : Michael Strefeler
  Date creation  : 28.03.2022
 
