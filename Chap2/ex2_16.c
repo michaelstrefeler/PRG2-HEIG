@@ -14,40 +14,68 @@
  -----------------------------------------------------------------------------------
 */
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#define TAILLE 8
 
 
 int* inverse(const int* debut, const int* fin);
+void afficher(const int tab[], size_t taille);
+void test(const int tab[], size_t taille);
 
 int main(void) {
-	int tableau[TAILLE] = {0,1,2,3,4,5,6,7};
-	const int* debut = &tableau[0];
-	const int* fin = debut + TAILLE - 1;
+	{
+		const int TAB[] = {1};
+		test(TAB, sizeof(TAB) / sizeof(int));
+	}
 
-	printf("Avant: [");
-	for(size_t i = 0; debut+i != fin+1; i++)
-		printf("%d, ", debut[i]);
-	printf("\b\b]\n");
+	{
+		const int TAB[] = {1, 2};
+		test(TAB, sizeof(TAB) / sizeof(int));
+	}
 
-	int* ptr_inverse = inverse(debut, fin);
-	if(ptr_inverse){
-		printf("Apres: [");
-		for(size_t i = 0; i < TAILLE; i++)
-			printf("%d, ", ptr_inverse[i]);
-		printf("\b\b]\n");
+	{
+		const int TAB[] = {1, 2, 3};
+		test(TAB, sizeof(TAB) / sizeof(int));
+	}
+
+	{
+		const int TAB[] = {1, 2, 3};
+		test(TAB, 0);
 	}
 	return EXIT_SUCCESS;
 }
 
 int* inverse(const int* debut, const int* fin){
-	int* ptr = calloc((unsigned long long int) (fin - debut+1),
-							  sizeof(int));
-	if(!ptr)
-		return NULL;
-	for(size_t i = 0; (fin-i) != debut-1; i++){
-		ptr[i] = *(fin-i);
+	assert(debut != NULL);
+	assert(fin != NULL);
+	assert(fin == debut -1 || debut <= fin);
+	const size_t TAILLE = (size_t)(fin - debut + 1);
+	int* ptr = calloc(TAILLE, sizeof(int));
+	if(ptr){
+		for(size_t i = 0; (fin-i) != debut-1; i++){
+			// ou for for(size_t i = 0; i < TAILLE; ++i);
+			ptr[i] = *(fin-i); // ou ptr[i] = *fin--;
+		}
 	}
 	return ptr;
+}
+
+void afficher(const int tab[], size_t taille){
+	if(taille > 0){
+		printf("[");
+		for(size_t i = 0; i < taille; i++)
+			printf("%d%s", tab[i], ", ");
+		printf("%s", "\b\b]\n");
+	}
+}
+
+
+void test(const int tab[], size_t taille){
+	printf("Avant inversion: \n");
+	afficher(tab, taille);
+	int* ptr = inverse(tab, tab + taille - 1);
+	printf("Apres inversion: \n");
+	afficher(ptr, taille);
+	free(ptr);
 }
