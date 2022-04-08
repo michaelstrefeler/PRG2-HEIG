@@ -14,34 +14,54 @@
  -----------------------------------------------------------------------------------
 */
 #include <assert.h>
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-int* initialiser(size_t taille, int valeur);
+int* initialiser_1(size_t taille, int valeur);
+int* initialiser_2(size_t taille, int valeur);
+void afficher(const int* ptr, size_t taille);
 
 int main(void) {
-	const size_t TAILLE = 10;
-   int* ptr = initialiser(TAILLE, 12);
-
-	// Teste que le pointeur existe. Si c'est le cas tout afficher
-	if(ptr){
-		printf("[");
-		for(size_t i = 0; i < TAILLE; i++)
-			printf("%d%s", ptr[i], ", ");
-		printf("%s", "\b\b]"); // ça peut potentiellement causer des problèmes sans %s
+	{
+		const size_t TAILLE = 3;
+		int* p = initialiser_1(TAILLE, 1);
+		afficher(p, TAILLE); // Affiche [1, 1, 1]
+		free(p);
 	}
-	free(ptr); // Ne pas oublier de libérer
+	{
+		const size_t TAILLE = 5;
+		int* p = initialiser_2(TAILLE, 2);
+		afficher(p, TAILLE); // Affiche [2, 2, 2, 2, 2]
+		free(p);
+	}
    return EXIT_SUCCESS;
 }
 
-int* initialiser(size_t taille, int valeur){
-	assert(taille > 0); // Car calloc(0, ...) comportement indéfini
-	int* ptr_tab = (int*)calloc(taille, sizeof(int));
-	// c'est bien de cast (int*)calloc
-	if(ptr_tab){
-		for(int* tmp = ptr_tab; tmp < ptr_tab + taille; *tmp++ = valeur);
-		// utiliser ptr temporaire pour ne pas avoir des fuites de mémoire
-		// *tmp++ affecte d'abord et incrémente après
+int* initialiser_1(size_t taille, int valeur){
+	assert(taille > 0);
+	int* p = (int*) calloc(taille, sizeof(int));
+	if (p)
+		for (int* tmp = p; tmp < p + taille; *tmp++ = valeur);
+	return p;
+}
+int* initialiser_2(size_t taille, int valeur){
+	assert(taille > 0);
+	int* p = (int*) calloc(taille, sizeof(int));
+	if (p) {
+		const int* const FIN = p + taille;
+		for (; p < FIN; *p++ = valeur);
+		p -= taille;
+	} return p;
+}
+
+void afficher(const int* ptr, size_t taille) {
+	assert(ptr != NULL);
+	printf("[");
+	for (size_t i = 0; i < taille; ++i) {
+		if (i > 0)
+			printf("%s", ", ");
+		printf("%d", ptr[i]); // ou *(ptr + i)
 	}
-	return ptr_tab;
+	printf("]\n");
 }

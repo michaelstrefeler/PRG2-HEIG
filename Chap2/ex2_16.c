@@ -49,25 +49,24 @@ int main(void) {
 int* inverse(const int* debut, const int* fin){
 	assert(debut != NULL);
 	assert(fin != NULL);
-	assert(fin == debut -1 || debut <= fin);
-	const size_t TAILLE = (size_t)(fin - debut + 1);
-	int* ptr = calloc(TAILLE, sizeof(int));
-	if(ptr){
-		for(size_t i = 0; (fin-i) != debut-1; i++){
-			// ou for for(size_t i = 0; i < TAILLE; ++i);
-			ptr[i] = *(fin-i); // ou ptr[i] = *fin--;
-		}
-	}
+	assert(fin - debut + 1 > 0); // pour garantir que (cf ci-dessous) TAILLE > 0
+	const size_t TAILLE = (size_t) (fin - debut + 1);
+	int* ptr = (int*) calloc(TAILLE, sizeof(int));
+	if (ptr)
+		for (size_t i = 0; i < TAILLE; ++i)
+			ptr[TAILLE - 1 - i] = debut[i]; // ou ptr[i] = *fin--;
 	return ptr;
 }
 
 void afficher(const int tab[], size_t taille){
-	if(taille > 0){
-		printf("[");
-		for(size_t i = 0; i < taille; i++)
-			printf("%d%s", tab[i], ", ");
-		printf("%s", "\b\b]\n");
+	assert(tab != NULL);
+	printf("[");
+	for (size_t i = 0; i < taille; ++i){
+		if (i > 0)
+			printf("%s", ", ");
+		printf("%d", tab[i]);
 	}
+	printf("]\n");
 }
 
 

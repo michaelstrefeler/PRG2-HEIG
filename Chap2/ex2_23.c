@@ -13,43 +13,64 @@
  -----------------------------------------------------------------------------------
 */
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#define N 3
+int* diagonale_1(const int* adr, size_t n);
+int* diagonale_2(const int* adr, size_t n);
 
-int* diagonale(const int* adr, const size_t n);
-void afficher(const int* adr, const size_t n);
+void afficher(const int* adr, size_t taille);
 
-int main(void) {
-	int matrice[N][N] = {{1, 2, 3},
-								{4, 5, 6},
-								{7, 8, 9}};
-	const int* const adr = (int*)matrice;
-	int* diag = diagonale(adr, N);
-	if(diag) {
-		printf("[");
-		for(size_t i = 0; i < N; i++)
-			printf("%d, ", diag[i]);
-		printf("\b\b]\n");
-	}
-   return EXIT_SUCCESS;
+void test(int* (*f)(const int*, size_t), const int* adr, size_t n);
+
+int main(void){
+	#define TAILLE 3
+	const int M[TAILLE][TAILLE] = {{1, 2, 3},
+											 {4, 5, 6},
+											 {7, 8, 9}};
+
+	test(diagonale_1, (int*) M, TAILLE);
+	test(diagonale_2, (int*) M, TAILLE);
 }
 
-int* diagonale(const int* adr, const size_t n){
-	int* diag = calloc(n, sizeof(int));
-	if(!diag)
-		return NULL;
-	size_t pos = 1;
-	diag[0] = adr[0];
-	for(size_t i = 0; i < n; i++){
-		for(size_t j = 0; j < n; j++){
-			if(i==j && i==pos){
-				diag[pos] = *(adr+i*n+j);
-				pos++;
-			}
+int* diagonale_1(const int* adr, size_t n){
+	assert(adr != NULL);
+	int* vecteur = (int*) calloc(n, sizeof(int));
+	if(vecteur){
+		for (size_t i = 0; i < n; ++i)
+			vecteur[i] = adr[i * (n + 1)]; // on ne garde que les termes i = j
+	}
+	return vecteur;
+}
+
+int* diagonale_2(const int* adr, size_t n){
+	assert(adr != NULL);
+	int* vecteur = (int*) calloc(n, sizeof(int));
+	if(vecteur){
+		const int* const FIN = adr + n * n;
+		for(size_t i = 0; adr < FIN; adr += n + 1, ++i)
+			vecteur[i] = *adr;
+	}
+	return vecteur;
+}
+
+void afficher(const int* adr, size_t taille){
+	printf("[");
+	if(adr){
+		for(size_t i = 0; i < taille; i++){
+			if(i > 0)
+				printf("%s", ", ");
+			printf("%d", adr[i]); // ou *(adr + i)
 		}
 	}
-	return diag;
+	printf("]\n");
 }
 
+void test(int* (*f)(const int*, size_t), const int* adr, size_t n){
+	assert(f != NULL);
+	int* vecteur = f(adr, n);
+	printf("Diagonale = ");
+	afficher(vecteur, n);
+	free(vecteur);
+}
