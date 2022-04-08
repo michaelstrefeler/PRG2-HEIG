@@ -16,6 +16,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 int* diagonale_1(const int* adr, size_t n);
 int* diagonale_2(const int* adr, size_t n);
