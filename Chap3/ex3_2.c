@@ -16,21 +16,18 @@
 #include <stdlib.h>
 #include <inttypes.h>
 
+#define TAILLE_MAX_NOM 20
+typedef char Nom[TAILLE_MAX_NOM + 1];
+typedef uint8_t Taille;
+typedef enum {BLEU, VERT, GRIS, MARRON, NOIR} CouleurYeux;
+
 typedef struct {
-	char nom[20];
-	uint8_t taille;
-	enum {
-		BLEU, VERT, GRIS, MARRON, NOIR
-	} couleur_yeux;
+	Nom nom;
+	Taille taille;
+	CouleurYeux couleur_yeux;
 } Personne;
 
-static const char* const couleurs[] = {
-	[BLEU] = "bleus",
-	[VERT] = "verts",
-	[GRIS] = "gris",
-	[MARRON] = "marron",
-	[NOIR] = "noirs"
-};
+const char* const COULEUR_YEUX[] = {"bleus", "verts", "gris", "marron", "noirs"};
 
 void afficher_1(Personne p);
 
@@ -44,11 +41,11 @@ int main(void) {
 }
 
 void afficher_1(Personne p) {
-	printf("%s mesure %d cm et a les yeux %s\n", p.nom, p.taille,
-			 couleurs[p.couleur_yeux]);
+	printf("%s mesure %" PRIu8 " cm et a les yeux %s\n", p.nom, p.taille,
+			 COULEUR_YEUX[p.couleur_yeux]);
 }
 
 void afficher_2(Personne* p) {
-	printf("%s mesure %d cm et a les yeux %s\n", p->nom, p->taille,
-			 couleurs[p->couleur_yeux]);
+	printf("%s mesure %" PRIu8 " cm et a les yeux %s\n", p->nom, p->taille,
+			 COULEUR_YEUX[p->couleur_yeux]);
 }
