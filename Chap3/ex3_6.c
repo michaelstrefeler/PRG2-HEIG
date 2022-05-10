@@ -34,8 +34,8 @@ typedef struct {
 void afficher(Personne p);
 
 int main(void) {
-	Personne toto = {.nom = "Toto", .nationalite=0, .special={80}};
-	Personne titi = {.nom = "Titi", .nationalite=1, .special={'C'}};
+	Personne toto = {.nom = "Toto", .nationalite=0, {.taux=80}};
+	Personne titi = {.nom = "Titi", .nationalite=1, {.permis='C'}};
 	afficher(toto);
 	afficher(titi);
 	return EXIT_SUCCESS;
