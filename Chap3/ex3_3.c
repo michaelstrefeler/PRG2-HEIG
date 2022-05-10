@@ -6,55 +6,51 @@
 
  Description    : Affichage de plusieurs personnes
 
- Remarque(s)    : <a completer>
+ Remarque(s)    : Faire 2 fonctions pour afficherPersonnne
 
  Compilateur    : Mingw-w64 gcc 11.2.0
  -----------------------------------------------------------------------------------
 */
 
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <inttypes.h>
+
+typedef const char* Nom;
+typedef uint8_t Taille;
+typedef enum {BLEU, VERT, GRIS, MARRON, NOIR} CouleurYeux;
 
 typedef struct {
-	char nom[20];
-	uint8_t taille;
-	enum {
-		BLEU, VERT, GRIS, MARRON, NOIR
-	} couleur_yeux;
+	Nom nom;
+	Taille taille; // en cm
+	CouleurYeux couleurYeux;
 } Personne;
 
-static const char* const couleurs[] = {
-	[BLEU] = "bleus",
-	[VERT] = "verts",
-	[GRIS] = "gris",
-	[MARRON] = "marron",
-	[NOIR] = "noirs"
-};
+const char* const COULEUR_YEUX[] = {"bleus", "verts", "gris", "marron", "noirs"};
 
 
-void afficher(Personne* p);
-
-void afficher_liste(Personne p[], size_t taille);
+void afficherPersonnne(const Personne* p);
+void afficherPersonnnes(const Personne tab[], size_t n);
 
 int main(void) {
-	Personne Paul = {.nom = "Paul", .taille=180, .couleur_yeux=BLEU};
-	Personne Pierre = {.nom = "Pierre", .taille=175, .couleur_yeux=VERT};
-	Personne Jean_Jacques = {.nom = "Jean-Jacques", .taille=182, .couleur_yeux=MARRON};
-	Personne personnes[] = {Paul, Pierre, Jean_Jacques};
-	afficher_liste(personnes, 3);
+	Personne PERSONNES[] = {
+		{.nom = "Paul", .taille=180, .couleurYeux=BLEU},
+		{.nom = "Pierre", .taille=175, .couleurYeux=VERT},
+		{.nom = "Jean-Jacques", .taille=182, .couleurYeux=MARRON}
+	};
+	const size_t TAILLE = sizeof(PERSONNES) / sizeof(Personne);
+	afficherPersonnnes(PERSONNES, TAILLE);
 	return EXIT_SUCCESS;
 }
 
-void afficher(Personne* p) {
-	printf("%s mesure %d cm et a les yeux %s\n", p->nom, p->taille,
-			 couleurs[p->couleur_yeux]);
+void afficherPersonnne(const Personne* p) {
+	printf("Nom : %s\nTaille : %" PRIu8 "\nYeux : %s\n\n", p->nom, p->taille,
+			 COULEUR_YEUX[p->couleurYeux]);
 }
 
-void afficher_liste(Personne p[], size_t taille) {
-	for (size_t i = 0; i < taille; i++) {
-		printf("Nom : %s\nTaille : %d\nYeux : %s\n\n", p[i].nom, p[i].taille,
-				 couleurs[p[i].couleur_yeux]);
+void afficherPersonnnes(const Personne tab[], size_t n) {
+	for (size_t i = 0; i < n; i++) {
+		afficherPersonnne(&tab[i]); // tab + i fonctionne aussi
 	}
 }
 
