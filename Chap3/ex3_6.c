@@ -12,40 +12,72 @@
  -----------------------------------------------------------------------------------
 */
 
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define TAILLE_MAX_NOM 20
 
 typedef char Nom[TAILLE_MAX_NOM + 1];
-const char* const NATIONALITE[] = {"Suisse", "Etranger"};
+typedef enum {SUISSE, ETRANGER} Nationalite;
+typedef enum {A, B, C} TypePermis;
+
+const char* const NATIONALITES[] = {"Suisse", "Etranger"};
+const char* const TYPES_PERMIS[] = {"A", "B", "C"};
+
+typedef struct {
+	uint8_t tauxActivite;
+}Suisse;
+
+typedef struct {
+	TypePermis typePermis;
+}Etranger;
+
+typedef union{
+	Suisse suisse;
+	Etranger etranger;
+} Specificites;
 
 typedef struct {
 	Nom nom;
-	enum {
-		SUISSE, ETRANGER
-	} nationalite;
-	union {
-		int taux;
-		char permis;
-	} special;
+	Nationalite nationalite;
+	Specificites specificites;
 } Personne;
 
-void afficher(Personne p);
+Personne suisse (const char* nom, uint8_t tauxActivite);
+Personne etranger (const char* nom, TypePermis typePermis);
+void afficher(const Personne* p); // c'est mieux de passer ces types par adresse
 
 int main(void) {
-	Personne toto = {.nom = "Toto", .nationalite=0, {.taux=80}};
-	Personne titi = {.nom = "Titi", .nationalite=1, {.permis='C'}};
-	afficher(toto);
-	afficher(titi);
+	Personne p1 = suisse("Toto", 80);
+	Personne p2 = etranger("Titi", C);
+	afficher(&p1); printf("\n");
+	afficher(&p2);  printf("\n");
 	return EXIT_SUCCESS;
 }
 
-void afficher(Personne p) {
-	if (p.nationalite)
-		printf("Nom : %s\nNationalite : %s\nType permis : %c\n\n", p.nom,
-				 NATIONALITE[p.nationalite], p.special.taux);
+
+Personne suisse (const char* nom, uint8_t tauxActivite){
+	Personne p = {"", SUISSE, {.suisse = {tauxActivite}}}; // "" = {} rempli de \o
+	strncpy(p.nom, nom, TAILLE_MAX_NOM);
+	return p;
+}
+
+Personne etranger (const char* nom, TypePermis typePermis){
+	Personne p = {"", ETRANGER, {.etranger = {typePermis}}};
+	strncpy(p.nom, nom, TAILLE_MAX_NOM);
+	return p;
+}
+
+
+void afficher(const Personne* p) {
+	printf("Nom             : %s\n", p->nom);
+	printf("Nationalite     : %s\n", NATIONALITES[p->nationalite]);
+	if(p->nationalite == SUISSE)
+		printf("Taux d'activite : %" PRIu8 "%%\n",
+				 p->specificites.suisse.tauxActivite);
 	else
-		printf("Nom : %s\nNationalite : %s\nTaux activite : %d%c\n\n", p.nom,
-				 NATIONALITE[p.nationalite], p.special.permis, '%');
+		printf("Type de permis  : %s\n",
+				 TYPES_PERMIS[p->specificites.etranger.typePermis]);
 }

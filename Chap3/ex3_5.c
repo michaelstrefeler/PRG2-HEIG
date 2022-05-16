@@ -49,13 +49,15 @@ int main(void) {
 	 * int16_t 2 bytes
 	 * char 1 bytes
 	 * double* 4 bytes
-	 *	--> 8 bytes
+	 *	--> 12 bytes (car on ne peut pas mettre b à une position impaire)
+	 *	|a|x|b|b|c|x|x|x| || |ptr|ptr|ptr|ptr|
 	 *	64 bits:
 	 * int8_t 1 bytes
 	 * int16_t 2 bytes
 	 * char 1 bytes
 	 * double* 8 bytes
 	 * --> 16 bytes
+	 * |a|x|b|b|c|x|x|x| || |ptr|ptr|ptr|ptr|ptr|ptr|ptr|ptr|
 	 */
 
 	//printf("sizeof(S1) = %lld", sizeof(struct S2)); // affiche 16 car 64 bits
