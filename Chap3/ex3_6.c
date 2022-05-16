@@ -59,7 +59,7 @@ int main(void) {
 
 
 Personne suisse (const char* nom, uint8_t tauxActivite){
-	Personne p = {"", SUISSE, {.suisse = {tauxActivite}}}; // "" = {} rempli de \o
+	Personne p = {"", SUISSE, {.suisse = {tauxActivite}}}; // "" = {} rempli de \0
 	strncpy(p.nom, nom, TAILLE_MAX_NOM);
 	return p;
 }
