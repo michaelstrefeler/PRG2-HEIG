@@ -23,13 +23,11 @@
  */
 int lireChaine(const char*const tab[], size_t n, const char* msgInvite);
 
-void clear_stdin(void);
-
 int main(void) {
 	typedef enum {LUNDI, MARDI, MERCREDI, JEUDI, VENDREDI, SAMEDI, DIMANCHE} Jour;
 	const char* const JOURS[] = {"lundi", "mardi", "mercredi", "jeudi", "vendredi",
 										  "samedi", "dimanche"};
-	const size_t NB_JOURS = (sizeof(JOURS)) / sizeof(char*);
+	const size_t NB_JOURS = sizeof(JOURS) / sizeof(char*);
 	const char* const MSG_INVITE = "Donnez un jour de la semaine en toutes lettres "
 											 "et en minuscules : ";
 
@@ -50,13 +48,9 @@ int lireChaine(const char* const tab[], size_t n, const char* msgInvite){
 	char chaine[TAILLE_MAX_CHAINE + 1];
 	printf(msgInvite);
 	scanf(chaineControle, chaine);
-	clear_stdin();
+	fflush(stdin);
 	for (size_t i = 0; i < n; ++i)
 		if(strcmp(chaine, tab[i]) == 0)
 			return (int) i;
 	return -1;
-}
-
-void clear_stdin(void){
-	int c;
 }
