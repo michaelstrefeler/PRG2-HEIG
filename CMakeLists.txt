@@ -8,3 +8,6 @@ add_executable(ex4_2 Chap4/ex4_2.c)
 add_executable(ex4_3 Chap4/ex4_3.c)
 add_executable(ex4_4 Chap4/ex4_4.c)
 add_executable(ex4_5 Chap4/ex4_5.c)
+
+add_executable(ex4_8 Chap4/ex4_8.c)
+add_executable(ex4_9 Chap4/ex4_9.c)
