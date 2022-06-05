@@ -22,35 +22,42 @@ void inverser_1(char* s);
 char* inverser_2(const char* s);
 
 int main(void) {
-	char* mot = "test123";
-	char* mot2 = "123456";
-	inverser_1(mot);
-	printf("Inverse de %s : %s\n", mot2, inverser_2(mot2));
+	char s1[] = "ABCD";
+	printf("s1 avant inversion = %s\n", s1);
+	inverser_1(s1);
+	printf("s1 apres inversion = %s\n", s1);
+	const char* s2 = "ABCD";
+	char* s3 = inverser_2(s2);
+	printf("\ns2 avant inversion = %s\n", s2);
+	printf("inverse de s2 = %s\n", s3);
+	printf("s2 apres inversion = %s\n", s2);
+	free(s3);
+	inverser_1(NULL); // Ne doit pas "planter" le programme
+	inverser_2(NULL); // Idem
 	return EXIT_SUCCESS;
 }
 
 void inverser_1(char* s) {
-	char* inverse = (char*) calloc(strlen(s), sizeof(char*));
-	int j = 0;
-	for (int i = (int) strlen(s) - 1; i > -1; --i) {
-		inverse[j] = s[i];
-		j++;
+	if (s != NULL) {
+		char c, * ptr = s + strlen(s) - 1;
+		while (s < ptr) {
+			c = *s;
+			*s++ = *ptr;
+			*ptr-- = c;
+		}
 	}
-	inverse[strlen(s)] = '\0';
-	printf("Inverse de %s : %s\n", s, inverse);
 }
 
 // Renvoie s en cas de problème
 char* inverser_2(const char* s) {
-	char* inverse = (char*) calloc(strlen(s), sizeof(char*));
-	if (inverse) {
-		int j = 0;
-		for (int i = (int) strlen(s) - 1; i > -1; --i) {
-			inverse[j] = s[i];
-			j++;
+	if (s != NULL) {
+		const size_t TAILLE = strlen(s);
+		char* r = (char*) calloc(TAILLE + 1, sizeof(char));
+		if (r != NULL) {
+			char* ptr = r + TAILLE - 1;
+			for (; *s; s++) *ptr-- = *s;
+			return r;
 		}
-		inverse[strlen(s)] = '\0';
-		return inverse;
 	}
 	return (char*) s;
 }

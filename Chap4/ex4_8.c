@@ -12,59 +12,58 @@
  -----------------------------------------------------------------------------------
 */
 
-#include <ctype.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-char* lireChaine(const char* msgInvite, const char* msgErreur);
+void saisie(char* chaine, size_t taille);
 
-char* fusion(const char* prenom, const char* nom);
+char* concat(const char* prenom, const char* nom);
+
+void clear_stdin(void);
 
 int main(void) {
-	const char* const MSG_PRENOM
-		= "Donnez-moi votre prenom sans accents/caracteres speciaux : ";
-	const char* const MSG_NOM
-		= "Donnez-moi votre nom sans accents/caracteres speciaux : ";
-	const char* const MSG_ERREUR
-		= "Saisie incorrecte. Veuillez SVP recommencer.";
-	char* prenom = lireChaine(MSG_PRENOM, MSG_ERREUR);
-	char* nom = lireChaine(MSG_NOM, MSG_ERREUR);
-	fusion(prenom, nom);
-	//fusion("James", "Bond");
+#define TAILLE_MAX_PRENOM 20
+#define TAILLE_MAX_NOM 30
+	char prenom[TAILLE_MAX_PRENOM + 1];
+	char nom[TAILLE_MAX_NOM + 1];
+	printf("Entrer le prenom (max %u caract.) : ", TAILLE_MAX_PRENOM);
+	saisie(prenom, TAILLE_MAX_PRENOM);
+	printf("Entrer le nom (max %u caract.) : ", TAILLE_MAX_NOM);
+	saisie(nom, TAILLE_MAX_NOM);
+	char* prenom_nom = concat(prenom, nom);
+	if (prenom_nom) {
+		printf("La chaine \"%s\" comporte %u caracteres.\n", prenom_nom,
+				 (unsigned) strlen(prenom_nom));
+		free(prenom_nom);
+	}
 	return EXIT_SUCCESS;
 }
 
-char* lireChaine(const char* msgInvite, const char* msgErreur) {
-#define TAILLE_MAX_CHAINE 40
-	char* chaine = calloc(TAILLE_MAX_CHAINE + 1, sizeof(char*));
-	do {
-		bool ok = false;
-		printf(msgInvite);
-		scanf("%s", chaine);
-		fseek(stdin, 0, SEEK_END); // portable
-		for (size_t i = 0; i < strlen(chaine); ++i) {
-			if (strlen(chaine) >= TAILLE_MAX_CHAINE) {
-				ok = false;
-				break;
-			} else if (isalpha(chaine[i]) || isblank(chaine[i]) || chaine[i] == '\0' ||
-						  chaine[i] == '-') {
-				ok = true;
-			} else {
-				ok = false;
-				break;
-			}
+void saisie(char* chaine, size_t taille) {
+	fgets(chaine, (int) taille + 1, stdin);
+	clear_stdin();
+	// Remplace la marque de fin de ligne ('\n') év présente dans la chaîne
+	// par une marque de fin de chaîne ('\0')
+	for (size_t i = 0; i < taille; ++i)
+		if (chaine[i] == '\n') {
+			chaine[i] = '\0';
+			break;
 		}
-		if (ok)
-			return chaine;
-		puts(msgErreur);
-	} while (true);
 }
 
-char* fusion(const char* prenom, const char* nom) {
-	char* out = (char*) calloc(strlen(prenom) + strlen(nom), sizeof(char*));
-	sprintf(out, "%s%s%s", prenom, " ", nom);
-	printf("La chaine \"%s\" comporte %llu caracteres.\n", out, strlen(out));
-	return out;
+char* concat(const char* prenom, const char* nom) {
+	// Construire un tableau dynamique de la taille nécessaire
+	// stockage du prénom, d'un espace, du nom et du caractère '\0'
+	char* resultat = (char*) calloc(strlen(prenom) + strlen(nom) + 2, sizeof(char));
+	if (resultat) {
+		strcpy(resultat, prenom);
+		strcat(resultat, " ");
+		strcat(resultat, nom);
+	}
+	return resultat;
+}
+
+void clear_stdin(void) {
+	fseek(stdin, 0, SEEK_END);
 }

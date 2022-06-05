@@ -15,32 +15,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define PRINT(STR) printf(#STR " = %s\n", STR)
+
 char* strncpy(char* to, const char* from, size_t size);
 
 int main(void) {
 	{
-		// Code trouvé sur https://www.cplusplus.com/reference/cstring/strncpy/
-		char str1[] = "To be or not to be";
-		char str2[40];
-		char str3[40];
+		const char* from = "AB";
+		char to[] = "XXXXXX";
+		for (size_t i = 0; i <= 3; ++i) {
+			strncpy(to, from, i);
+			PRINT(to);
+		}
+	}
 
-		/* copy to sized buffer (overflow safe): */
-		strncpy(str2, str1, sizeof(str2));
-
-		/* partial copy (only 5 chars): */
-		strncpy(str3, str2, 5);
-		str3[5] = '\0';   /* null character manually added */
-
-		puts(str1);
-		puts(str2);
-		puts(str3);
+	{
+		const char* from = "AB";
+		char to[] = "XXXXXX";
+		const size_t TAILLE = 6;
+		strncpy(to, from, 4);
+		for (size_t i = 0; i <= TAILLE; ++i)
+			printf("%d ", (int) to[i]);
+		printf("\n");
 	}
 	return EXIT_SUCCESS;
 }
 
 char* strncpy(char* to, const char* from, size_t size) {
-	for (size_t i = 0; i < size; i++) {
+	size_t i;
+	for (i = 0; i < size && from[i] != '\0'; ++i)
 		to[i] = from[i];
-	}
+	for (; i < size; ++i)
+		to[i] = '\0';
 	return to;
 }
