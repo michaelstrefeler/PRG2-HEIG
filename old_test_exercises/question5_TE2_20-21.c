@@ -39,11 +39,16 @@ typedef union {
 
 typedef struct {
 	const char* nom;
-} Membre_equipage;
+} Membre;
+
+typedef struct {
+	size_t nbMembre;
+	Membre equipe[MAX_MEMBRES];
+} Equipage;
 
 typedef struct {
 	const char* nom;
-	Membre_equipage equipage[MAX_MEMBRES];
+	Equipage equipage[MAX_MEMBRES];
 	Type type;
 	Specificites specificites;
 } Vaisseau;
@@ -52,14 +57,14 @@ typedef struct {
 void afficher(Vaisseau* v) {
 	printf("Vaisseau : %s\n", v->nom);
 	printf("Membres de l'equipage : ");
-	for (size_t i = 0; i < MAX_MEMBRES; ++i) {
-		if (v->equipage[i].nom && i == 0)
-			printf("%s", v->equipage[i].nom);
-		else if (v->equipage[i].nom) {
-			printf(", %s", v->equipage[i].nom);
+	for (size_t i = 0; i < v->equipage->nbMembre; ++i) {
+		if (v->equipage->equipe[i].nom && i == 0)
+			printf("%s", v->equipage->equipe[i].nom);
+		else {
+			printf(", %s", v->equipage->equipe[i].nom);
 		}
 	}
-	if (!v->equipage[0].nom)
+	if (v->equipage->nbMembre == 0)
 		printf("Aucun");
 	if (v->type == COMBAT) {
 		printf("\nPoids : %u [kg]\nLasers : %s\n\n", v->specificites.combat.poids,
@@ -71,8 +76,12 @@ void afficher(Vaisseau* v) {
 }
 
 int main(void) {
-	Vaisseau starfighter = {"Starfighter", {{"Joe"}, {"Jack"}}, COMBAT, {{2500, 1}}};
-	Vaisseau x_wing = {"X-Wing", {}, EXPLORATION, {.exploration={63.2}}};
+	Vaisseau starfighter = {"Starfighter", {
+		2, {{"Joe"}, {"Jack"}}},
+									COMBAT, {{2500, 1}}};
+	Vaisseau x_wing = {"X-Wing",
+							 {0, {}},
+							 EXPLORATION, {.exploration={63.2}}};
 	afficher(&starfighter);
 	afficher(&x_wing);
 
