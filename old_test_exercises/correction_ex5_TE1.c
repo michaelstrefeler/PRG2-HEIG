@@ -9,8 +9,9 @@ int** adressesCoin(const int* adr, size_t n, size_t m);
 int main()
 {
     const int M[][4] = {{1,2,3, 4},{5,6, 7, 8},{9,10,11,12}};
-    adressesCoin((int*)M, 4, 3);
-	 // manque partie pour contrôler/afficher les valeurs
+    int** coins = adressesCoin((int*)M, 3, 4);
+    // affiche les valeurs des 4 coins
+    printf("%d, %d, %d, %d", *coins[0], *coins[1], *coins[2], *coins[3]);
     return EXIT_SUCCESS;
 }
 
